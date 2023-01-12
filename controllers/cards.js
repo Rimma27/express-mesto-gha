@@ -30,13 +30,7 @@ module.exports.deleteCard = (req, res) => {
         res.status(200).send({ card });
       }
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации полей' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка на сервере' });
-      }
-    });
+    .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.likeCard = (req, res) => {
