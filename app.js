@@ -19,6 +19,10 @@ app.use((req, res, next) => {
 
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
+app.use('*', (req, res, next) => {
+  res.status(404).send({ message: 'Запрашиваемый адрес не найден. Проверьте URL и метод запроса' });
+  next();
+});
 
 async function connect() {
   await mongoose.connect(MONGO_URL);
