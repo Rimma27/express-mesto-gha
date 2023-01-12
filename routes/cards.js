@@ -7,14 +7,14 @@ const {
   dislikeCard,
 } = require('../controllers/cards');
 
-cardRoutes.get('/cards', getCards);
+cardRoutes.get('/', getCards);
 
-cardRoutes.post('/cards', createCard);
+cardRoutes.post('/', createCard);
 
-cardRoutes.delete('cards/:cardId', deleteCard);
+cardRoutes.delete('/:cardId', deleteCard);
 
-cardRoutes.put('/cards/:cardId/likes', likeCard);
+cardRoutes.put('/:cardId/likes', likeCard);
 
-cardRoutes.delete('/cards/:cardId/likes', dislikeCard);
+cardRoutes.delete('/:cardId/likes', dislikeCard);
 
 module.exports = cardRoutes;

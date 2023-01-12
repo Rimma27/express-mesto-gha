@@ -9,9 +9,6 @@ app.use(express.json());
 const userRoutes = require('./routes/users');
 const cardRoutes = require('./routes/cards');
 
-app.use('/users', userRoutes);
-app.use('/cards', cardRoutes);
-
 app.use((req, res, next) => {
   req.user = {
     _id: '63bed5a4af62a22b5a77ec50', // вставьте сюда _id созданного в предыдущем пункте пользователя
@@ -19,6 +16,9 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use('/users', userRoutes);
+app.use('/cards', cardRoutes);
 
 async function connect() {
   await mongoose.connect(MONGO_URL);
