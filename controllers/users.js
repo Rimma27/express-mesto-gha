@@ -53,7 +53,7 @@ module.exports.updateUsersProfile = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.status(SuccessCode).send({ user }))
+    .then((user) => res.status(SuccessCode).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ErrorCodeIncorrectData).send({ message: 'Пользователь с указанным _id не найден.' });
@@ -73,7 +73,7 @@ module.exports.updateUsersAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.status(SuccessCode).send({ user }))
+    .then((user) => res.status(SuccessCode).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ErrorCodeIncorrectData).send({ message: 'Пользователь с указанным _id не найден.' });
