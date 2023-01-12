@@ -10,10 +10,10 @@ module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации полей' });
-      } else if (err.name === 'CastError') {
+      if (err.name === 'NotFound') {
         res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Ошибка валидации полей' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка на сервере' });
       }

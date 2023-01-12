@@ -23,12 +23,16 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.status(200).send({ card }))
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      } else {
+        res.status(200).send({ card });
+      }
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Ошибка валидации полей' });
-      } else if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка на сервере' });
       }
@@ -44,9 +48,9 @@ module.exports.likeCard = (req, res) => {
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
-      } else if (err.name === 'CastError') {
         res.status(404).send({ message: 'Передан несуществующий _id карточки' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка на сервере' });
       }
