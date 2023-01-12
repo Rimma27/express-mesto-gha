@@ -15,13 +15,7 @@ module.exports.getUserById = (req, res) => {
         res.status(200).send({ user });
       }
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Ошибка валидации полей' });
-      } else {
-        res.status(500).send({ message: 'Произошла ошибка на сервере' });
-      }
-    });
+    .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.createUser = (req, res) => {
