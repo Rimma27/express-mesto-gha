@@ -2,17 +2,17 @@
   "name": "express-mesto-gha",
   "version": "1.0.0",
   "description": "https://github.com/Rimma27/express-mesto-gha.git",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "lint": "npx eslint"
+    "lint": "npx eslint ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Rimma27/express-mesto-gha.git"
   },
-  "author": "",
+  "author": "Rimma Adyleva",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Rimma27/express-mesto-gha/issues"

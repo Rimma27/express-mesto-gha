@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+const { ErrorCodeNotFound } = require('./utils/constans');
+
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 const app = express();
 
@@ -20,7 +22,7 @@ app.use((req, res, next) => {
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
 app.use('*', (req, res, next) => {
-  res.status(404).send({ message: 'Запрашиваемый адрес не найден. Проверьте URL и метод запроса' });
+  res.status(ErrorCodeNotFound).send({ message: 'Запрашиваемый адрес не найден. Проверьте URL и метод запроса' });
   next();
 });
 
