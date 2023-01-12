@@ -7,23 +7,8 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  User.findById(
-    req.params.userId,
-    {
-      new: true,
-      runValidators: true,
-      upsert: true,
-    },
-  )
-    .then((user) => res.status(200).send(
-      {
-        data: {
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-        },
-      },
-    ))
+  User.findById(req.params.userId)
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Пользователь по указанному _id не найден' });
@@ -36,7 +21,7 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then(() => res.status(201).send({ data: { name, about, avatar } }))
+    .then((user) => res.status(201).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Ошибка валидации полей' });
