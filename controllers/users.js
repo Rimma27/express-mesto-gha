@@ -46,14 +46,14 @@ module.exports.createUser = (req, res) => {
 module.exports.updateUsersProfile = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
-    req.params.userId,
+    req.user._id,
     { name, about },
     {
       new: true,
       runValidators: true,
     },
   )
-    .then((user) => res.status(SuccessCode).send({ data: user }))
+    .then((user) => res.status(SuccessCode).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ErrorCodeIncorrectData).send({ message: 'Пользователь с указанным _id не найден.' });
@@ -66,14 +66,14 @@ module.exports.updateUsersProfile = (req, res) => {
 module.exports.updateUsersAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
-    req.params.userId,
+    req.user._id,
     { avatar },
     {
       new: true,
       runValidators: true,
     },
   )
-    .then((user) => res.status(SuccessCode).send({ data: user }))
+    .then((user) => res.status(SuccessCode).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(ErrorCodeIncorrectData).send({ message: 'Пользователь с указанным _id не найден.' });
