@@ -1,31 +1,31 @@
 const User = require('../models/user');
 const {
-  ErrorCodeIncorrectData,
-  ErrorCodeNotFound,
-  ErrorCodeDefault,
-  SuccessCode,
+  ERROR_CODE_INCORRECT_DATA,
+  ERROR_CODE_NOT_FOUND,
+  ERROR_CODE_DEFAULT,
+  SUCCESS_CODE,
 } = require('../utils/constans');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(SuccessCode).send({ data: users }))
-    .catch(() => res.status(ErrorCodeDefault).send({ message: 'Произошла ошибка на сервере' }));
+    .then((users) => res.status(SUCCESS_CODE).send({ data: users }))
+    .catch(() => res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка на сервере' }));
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(ErrorCodeNotFound).send({ message: 'Пользователь по указанному _id не найден' });
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
       } else {
-        res.status(SuccessCode).send({ user });
+        res.status(SUCCESS_CODE).send({ user });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ErrorCodeIncorrectData).send({ message: 'Передан невалидный ID' });
+        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Передан невалидный ID' });
       } else {
-        res.status(ErrorCodeDefault).send({ message: 'Произошла ошибка' });
+        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -33,12 +33,12 @@ module.exports.getUserById = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(SuccessCode).send({ user }))
+    .then((user) => res.status(SUCCESS_CODE).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ErrorCodeIncorrectData).send({ message: 'Ошибка валидации полей' });
+        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Ошибка валидации полей' });
       } else {
-        res.status(ErrorCodeDefault).send({ message: 'Произошла ошибка на сервере' });
+        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка на сервере' });
       }
     });
 };
@@ -53,12 +53,18 @@ module.exports.updateUsersProfile = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.status(SuccessCode).send({ user }))
+    .then((user) => {
+      if (!user) {
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
+      } else {
+        res.status(SUCCESS_CODE).send({ user });
+      }
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ErrorCodeIncorrectData).send({ message: 'Пользователь с указанным _id не найден.' });
+        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Ошибка валидации полей' });
       } else {
-        res.status(ErrorCodeDefault).send({ message: 'Произошла ошибка на сервере' });
+        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка на сервере' });
       }
     });
 };
@@ -73,12 +79,18 @@ module.exports.updateUsersAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .then((user) => res.status(SuccessCode).send({ user }))
+    .then((user) => {
+      if (!user) {
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
+      } else {
+        res.status(SUCCESS_CODE).send({ user });
+      }
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ErrorCodeIncorrectData).send({ message: 'Пользователь с указанным _id не найден.' });
+        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Ошибка валидации полей' });
       } else {
-        res.status(ErrorCodeDefault).send({ message: 'Произошла ошибка на сервере' });
+        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка на сервере' });
       }
     });
 };
