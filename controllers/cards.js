@@ -4,6 +4,7 @@ const {
   ERROR_CODE_NOT_FOUND,
   ERROR_CODE_DEFAULT,
   SUCCESS_CODE,
+  ERROR_FORBIDDEN,
 } = require('../utils/constans');
 
 module.exports.getCards = (req, res) => {
@@ -32,6 +33,8 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
+      } else if (!card.owner._id.equals(req.user._id)) {
+        res.status(ERROR_FORBIDDEN).send({ message: 'Вы не можете удалять карточки других пользователей' });
       } else {
         res.status(SUCCESS_CODE).send({ card });
       }
