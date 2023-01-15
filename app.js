@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 
-const { ERROR_CODE_NOT_FOUND } = require('./utils/constans');
+const NotFoundError = require('./errors/not-found-error');
 
 const { PORT = 3000, MONGO_URL = 'mongodb://localhost:27017/mestodb' } = process.env;
 const app = express();
@@ -12,21 +13,28 @@ const userRoutes = require('./routes/users');
 const cardRoutes = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { validationCreateUser, validationLogin } = require('./middlewares/validation');
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validationLogin, login);
+app.post('/signup', validationCreateUser, createUser);
 
 app.use(auth);
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
 app.use('*', (req, res, next) => {
-  res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Запрашиваемый адрес не найден. Проверьте URL и метод запроса' });
+  next(new NotFoundError('Запрашиваемый адрес не найден. Проверьте URL и метод запроса'));
   next();
 });
-
-// app.use((err, req, res, next) => {
-//   res.status(500).send({ message: 'На сервере произошла ошибка' });
-// });
+app.use(errors());
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({
+    message: statusCode === 500
+      ? 'Произошла ошибка на сервере'
+      : message,
+  });
+  next();
+});
 
 async function connect() {
   await mongoose.connect(MONGO_URL);

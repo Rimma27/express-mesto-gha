@@ -3,13 +3,19 @@ const {
   getUsers, getUserById, updateUsersProfile, updateUsersAvatar, getCurrentUser,
 } = require('../controllers/users');
 
+const {
+  validationUserId,
+  validationUpdateUsersProfile,
+  validationUpdateUsersAvatar,
+} = require('../middlewares/validation');
+
 userRoutes.get('/', getUsers);
 
-userRoutes.get('/:userId', getUserById);
+userRoutes.get('/:userId', validationUserId, getUserById);
 
-userRoutes.patch('/me', updateUsersProfile);
+userRoutes.patch('/me', validationUpdateUsersProfile, updateUsersProfile);
 
-userRoutes.patch('/me/avatar', updateUsersAvatar);
+userRoutes.patch('/me/avatar', validationUpdateUsersAvatar, updateUsersAvatar);
 
 userRoutes.get('/me', getCurrentUser);
 

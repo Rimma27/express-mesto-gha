@@ -1,54 +1,52 @@
 const Card = require('../models/card');
-const {
-  ERROR_CODE_INCORRECT_DATA,
-  ERROR_CODE_NOT_FOUND,
-  ERROR_CODE_DEFAULT,
-  SUCCESS_CODE,
-  ERROR_FORBIDDEN,
-} = require('../utils/constans');
+const { SUCCESS_CODE } = require('../utils/constans');
 
-module.exports.getCards = (req, res) => {
+const BadRequestError = require('../errors/bad-request-error');
+const ForbiddenError = require('../errors/forbidden-error');
+const NotFoundError = require('../errors/not-found-error');
+
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((card) => res.status(SUCCESS_CODE).send({ data: card }))
-    .catch(() => res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка на сервере' }));
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
     .then((card) => res.status(SUCCESS_CODE).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Ошибка валидации полей' });
+        next(new BadRequestError('Ошибка валидации полей'));
       } else {
-        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка на сервере' });
+        next(err);
       }
     });
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
+        throw new NotFoundError('Пользователь по указанному _id не найден');
       } else if (!card.owner._id.equals(req.user._id)) {
-        res.status(ERROR_FORBIDDEN).send({ message: 'Вы не можете удалять карточки других пользователей' });
+        throw new ForbiddenError('Вы не можете удалять карточки других пользователей');
       } else {
         res.status(SUCCESS_CODE).send({ card });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Передан невалидный ID' });
+        next(new BadRequestError('Передан невалидный ID'));
       } else {
-        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -56,21 +54,20 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
-      } else {
-        res.status(SUCCESS_CODE).send({ card });
+        throw new NotFoundError('Пользователь по указанному _id не найден');
       }
+      res.status(SUCCESS_CODE).send({ card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Передан невалидный ID' });
+        next(new BadRequestError('Передан невалидный ID'));
       } else {
-        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -78,16 +75,15 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден' });
-      } else {
-        res.status(SUCCESS_CODE).send({ card });
+        throw new NotFoundError('Пользователь по указанному _id не найден');
       }
+      res.status(SUCCESS_CODE).send({ card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(ERROR_CODE_INCORRECT_DATA).send({ message: 'Передан невалидный ID' });
+        next(new BadRequestError('Передан невалидный ID'));
       } else {
-        res.status(ERROR_CODE_DEFAULT).send({ message: 'Произошла ошибка' });
+        next(err);
       }
     });
 };
