@@ -31,7 +31,7 @@ module.exports.deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Пользователь по указанному _id не найден');
-      } else if (!card.owner._id.equals(req.user._id)) {
+      } else if (!card.owner.equals(req.user._id)) {
         throw new ForbiddenError('Вы не можете удалять карточки других пользователей');
       } else {
         res.status(SUCCESS_CODE).send({ card });
@@ -52,6 +52,7 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Пользователь по указанному _id не найден');
@@ -73,6 +74,7 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Пользователь по указанному _id не найден');

@@ -1,12 +1,13 @@
 const { celebrate, Joi } = require('celebrate');
 
+const regexLink = /http(s)*:\/\/(www\.)*[a-z0-9\W_]+(\/)*/i;
 module.exports.validationCreateUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(      ),
+    avatar: Joi.string().pattern(regexLink),
   }),
 });
 
@@ -19,7 +20,7 @@ module.exports.validationLogin = celebrate({
 
 module.exports.validationUserId = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().required().hex().length(24),
+    id: Joi.string().required().length(24),
   }),
 });
 
@@ -32,19 +33,19 @@ module.exports.validationUpdateUsersProfile = celebrate({
 
 module.exports.validationUpdateUsersAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(   ),
+    avatar: Joi.string().pattern(regexLink),
   }),
 });
 
 module.exports.validationCreateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().pattern(    ),
+    link: Joi.string().required().pattern(regexLink),
   }),
 });
 
 module.exports.validationCardId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().hex().length(24),
+    cardId: Joi.string().required().length(24),
   }),
 });
