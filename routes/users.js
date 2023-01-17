@@ -11,12 +11,12 @@ const {
 
 userRoutes.get('/', getUsers);
 
+userRoutes.get('/me', getCurrentUser);
+
 userRoutes.get('/:userId', validationUserId, getUserById);
 
 userRoutes.patch('/me', validationUpdateUsersProfile, updateUsersProfile);
 
 userRoutes.patch('/me/avatar', validationUpdateUsersAvatar, updateUsersAvatar);
-
-userRoutes.get('/me', getCurrentUser);
 
 module.exports = userRoutes;
