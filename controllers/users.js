@@ -66,7 +66,9 @@ module.exports.createUser = async (req, res, next) => {
   User.create({
     name, about, avatar, email, password: hash,
   })
-    .then((user) => res.status(SUCCESS_CODE).send({ user }))
+    .then(() => res.status(SUCCESS_CODE).send({
+      name, about, avatar, email,
+    }))
     .catch((err) => {
       if (err.code === MONGO_DUPLICATE_ERROR) {
         next(new ConflictError('Данный пользователь уже существует'));
