@@ -1,7 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 
 // eslint-disable-next-line no-useless-escape
-const regexLink = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/im;
+const regexLink = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:?#[\]@!\$&'\(\)\*\+,;=.]+$/im;
 module.exports.validationCreateUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
