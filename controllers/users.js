@@ -49,7 +49,7 @@ module.exports.login = (req, res, next) => {
           return res.status(SUCCESS_CODE).send({ token });
         });
     })
-    .catch(next());
+    .catch(next);
 };
 
 module.exports.createUser = async (req, res, next) => {
