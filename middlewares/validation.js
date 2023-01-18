@@ -1,6 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 
-const regexLink = /http(s)*:\/\/(www\.)*[a-z0-9\W_]+(\/)*/i;
+const regexLink = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&=]*)/i;
 module.exports.validationCreateUser = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),

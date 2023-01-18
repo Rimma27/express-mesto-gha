@@ -49,13 +49,7 @@ module.exports.login = (req, res, next) => {
           return res.status(SUCCESS_CODE).send({ token });
         });
     })
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError('Ошибка валидации полей'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next());
 };
 
 module.exports.createUser = async (req, res, next) => {

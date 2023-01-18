@@ -28,7 +28,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    dropDups: true,
     validate: {
       validator(email) {
         return validator.isEmail(email);
@@ -39,7 +38,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     select: false,
   },
 });

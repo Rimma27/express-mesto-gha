@@ -7,7 +7,6 @@ const NotFoundError = require('../errors/not-found-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .populate(['owner', 'likes'])
     .then((card) => res.status(SUCCESS_CODE).send({ data: card }))
     .catch(next);
 };
@@ -27,14 +26,15 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Пользователь по указанному _id не найден');
       } else if (!card.owner.equals(req.user._id)) {
         throw new ForbiddenError('Вы не можете удалять карточки других пользователей');
       } else {
-        res.status(SUCCESS_CODE).send({ card });
+        card.remove()
+          .then(() => res.status(SUCCESS_CODE).send({ message: 'Карточка успешно удалена' }));
       }
     })
     .catch((err) => {

@@ -14,6 +14,7 @@ const cardRoutes = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { validationCreateUser, validationLogin } = require('./middlewares/validation');
+const centralizedHandler = require('./middlewares/centralizedHandler');
 
 app.post('/signin', validationLogin, login);
 app.post('/signup', validationCreateUser, createUser);
@@ -26,15 +27,7 @@ app.use('*', (req, res, next) => {
   next();
 });
 app.use(errors());
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    message: statusCode === 500
-      ? 'Произошла ошибка на сервере'
-      : message,
-  });
-  next();
-});
+app.use(centralizedHandler);
 
 async function connect() {
   await mongoose.connect(MONGO_URL);
